@@ -33,7 +33,7 @@ export default function ProjectWorkspace({ params }: { params: { id: string } })
       <header className="flex h-14 w-full items-center justify-between rounded-xl bg-surface px-6 shadow-sm border border-slate-200 shrink-0">
         <div className="flex items-center gap-4">
            <h1 className="text-lg font-bold text-slate-800">
-             CordaX <span className="text-slate-400 font-normal">/ Project {id}</span>
+             InviX.AI <span className="text-slate-400 font-normal">/ Project {id}</span>
            </h1>
         </div>
 

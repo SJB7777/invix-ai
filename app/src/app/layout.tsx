@@ -15,7 +15,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CordaX Metrology",
+  title: "Invix.AI Metrology",
   description: "AI-powered X-ray Analysis",
 };
 

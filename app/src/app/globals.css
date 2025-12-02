@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+:root {
+  /* --- Brand Colors (Vibrant Blue) --- */
+  --primary: 221 83% 53%;      /* #2563eb (Blue-600) */
+  --primary-foreground: 0 0% 100%;
+
+  /* --- Backgrounds (Clean White Theme) --- */
+  --background: 210 40% 98%;   /* #f8fafc (Slate-50) */
+  --foreground: 222 47% 11%;   /* #0f172a (Slate-900) */
+  
+  --surface: 0 0% 100%;        /* #ffffff */
+  --surface-foreground: 222 47% 11%;
+
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+
+  --border: 214.3 31.8% 91.4%; /* #e2e8f0 (Slate-200) */
+  
+  /* --- Chart Colors --- */
+  --chart-1: 221 83% 53%;      /* Blue */
+  --chart-2: 142 71% 45%;      /* Green */
+  --chart-3: 32 95% 44%;       /* Orange */
+  
+  /* --- Radius --- */
+  --radius: 0.75rem;           /* 12px */
+}
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-surface: hsl(var(--surface));
+  --color-border: hsl(var(--border));
+  
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono);
+  
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+  
+  /* Toss Style Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+  --shadow-float: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}

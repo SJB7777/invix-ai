@@ -55,40 +55,42 @@ export function AnalysisXRR() {
 
     // ✅ EDP Plot Data 구성
     const edpPlotData: any[] = [];
-    if (edpData) {
-        // 1. Total Profile (Filled Area)
-        edpPlotData.push({
-            x: edpData.z,
-            y: edpData.rho,
-            name: 'Total Density',
-            type: 'scatter',
-            mode: 'lines',
-            fill: 'tozeroy', // 전체 영역 채우기
-            line: { color: '#059669', width: 3, shape: 'spline' },
-            fillcolor: 'rgba(5, 150, 105, 0.1)'
-        });
-
-        // 2. Individual Layers (Dotted Lines)
-        // 색상 팔레트
-        const colors = ['#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899', '#14b8a6'];
-        
-        edpData.layers.forEach((layer, idx) => {
+        // edpData 자체가 null일 수 있으므로 방어 로직 추가
+        if (edpData) {
+            // 1. Total Density (Filled Area)
             edpPlotData.push({
                 x: edpData.z,
-                y: layer.rho,
-                name: layer.name,
+                y: edpData.rho,
+                name: 'Total Density',
                 type: 'scatter',
                 mode: 'lines',
-                line: { 
-                    color: colors[idx % colors.length], 
-                    width: 2, 
-                    dash: 'dot', // ✅ 점선 처리
-                    shape: 'spline' 
-                },
-                hoverinfo: 'y+name'
+                fill: 'tozeroy', // 전체 영역 채우기
+                line: { color: '#059669', width: 3, shape: 'spline' },
+                fillcolor: 'rgba(5, 150, 105, 0.1)'
             });
-        });
-    }
+
+            // 2. Individual Layers (Dotted Lines)
+            const colors = ['#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899', '#14b8a6'];
+            
+            // ✅ Fix: layers가 undefined일 경우를 대비해 Optional Chaining 사용
+            edpData.layers?.forEach((layer, idx) => {
+                edpPlotData.push({
+                    x: edpData.z,
+                    y: layer.rho,
+                    name: layer.name,
+                    type: 'scatter',
+                    mode: 'lines',
+                    line: { 
+                        color: colors[idx % colors.length], 
+                        width: 2, 
+                        dash: 'dot', // ✅ 점선 처리
+                        shape: 'spline' 
+                    },
+                    hoverinfo: 'y+name'
+                });
+            });
+        }
+
 
     // EDP Annotations
     const edpAnnotations = React.useMemo(() => {

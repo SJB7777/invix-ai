@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useRef, useMemo } from "react";
+import React, { useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Text, Center, Environment, ContactShadows } from "@react-three/drei";
 import * as THREE from "three";
 import { useProjectStore, MaterialLayer } from "@/lib/stores/useProjectStore";
 import { BentoCard } from "@/components/ui/BentoCard";
-import { Copy, Download, Printer, Box, FileSpreadsheet, BarChart2, Sigma } from "lucide-react";
+import { Copy, Download, Printer, Box, FileSpreadsheet, BarChart2, Sigma, FileText } from "lucide-react";
 import dynamic from "next/dynamic";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
@@ -139,21 +139,18 @@ export function ReportXRR() {
     const plotData = useMemo(() => {
         if (!measuredData || !fitData || !residualData) return [];
         return [
-            // 1. Measured Data (Points)
             {
                 x: measuredData.x, y: measuredData.y,
                 type: 'scatter', mode: 'markers', name: 'Measured',
-                marker: { color: 'black', symbol: 'circle-open', size: 6 },
+                marker: { color: 'black', symbol: 'circle-open', size: 5 }, // size 줄임
                 xaxis: 'x', yaxis: 'y'
             },
-            // 2. Fitted Data (Line)
             {
                 x: fitData.x, y: fitData.y,
                 type: 'scatter', mode: 'lines', name: 'Calculated',
                 line: { color: '#ef4444', width: 2 },
                 xaxis: 'x', yaxis: 'y'
             },
-            // 3. Residual (Bottom Panel)
             {
                 x: residualData.x, y: residualData.y,
                 type: 'scatter', mode: 'lines', name: 'Residual',
@@ -173,15 +170,15 @@ export function ReportXRR() {
     }
 
     return (
-        <div className="grid grid-cols-12 gap-6 h-full pb-6 overflow-y-auto">
+        <div className="grid grid-cols-12 gap-4 h-full pb-4 overflow-y-auto">
             
-            {/* --- Left Column: Visuals --- */}
-            <div className="col-span-12 lg:col-span-7 flex flex-col gap-6">
+            {/* --- Left Column: Visuals (비중 유지) --- */}
+            <div className="col-span-12 lg:col-span-7 flex flex-col gap-4">
                 
                 {/* 1. 3D Model */}
                 <BentoCard 
                     title="Schematic 3D Structure" 
-                    className="min-h-[400px]"
+                    className="min-h-[350px]"
                     action={
                         <button onClick={() => { 
                             const canvas = document.querySelector('canvas'); 
@@ -203,10 +200,10 @@ export function ReportXRR() {
                     </div>
                 </BentoCard>
 
-                {/* 2. Publication Graph (Main Fit + Residual) */}
+                {/* 2. Publication Graph */}
                 <BentoCard 
                     title={<div className="flex items-center gap-2"><BarChart2 className="w-4 h-4 text-primary"/> Fitting Result</div>}
-                    className="min-h-[500px]"
+                    className="min-h-[450px]"
                     action={
                         <div className="flex gap-2">
                             <button onClick={handleDownloadCSV} className="flex items-center gap-1 text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1.5 rounded hover:bg-slate-200 transition-colors">
@@ -239,9 +236,9 @@ export function ReportXRR() {
                                 plot_bgcolor: 'white'
                             }}
                             config={{ 
-                                toImageButtonOptions: { format: 'png', filename: 'fitting_result', height: 800, width: 800, scale: 2 }, // High-Res export
+                                toImageButtonOptions: { format: 'png', filename: 'fitting_result', height: 800, width: 800, scale: 2 },
                                 displayModeBar: true, 
-                                modeBarButtons: [['toImage']] // Only show save image button for cleanliness
+                                modeBarButtons: [['toImage']]
                             }}
                             style={{ width: '100%', height: '100%' }}
                             useResizeHandler
@@ -250,39 +247,40 @@ export function ReportXRR() {
                 </BentoCard>
             </div>
 
-            {/* --- Right Column: Text & Stats --- */}
-            <div className="col-span-12 lg:col-span-5 flex flex-col gap-6">
+            {/* --- Right Column: Text & Stats (세로 길이 최적화) --- */}
+            {/* gap-6 -> gap-3으로 줄여서 컴팩트하게 배치 */}
+            <div className="col-span-12 lg:col-span-5 flex flex-col gap-3">
                 
-                {/* Statistics Card (New) */}
+                {/* 1. Statistics (Padding 줄임) */}
                 <BentoCard title={<div className="flex items-center gap-2"><Sigma className="w-4 h-4 text-primary"/> Statistical Error Analysis</div>}>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="p-3 bg-slate-50 rounded border border-slate-100">
-                            <div className="text-xs text-slate-500 uppercase font-bold">Chi-Square (χ²)</div>
-                            <div className="text-xl font-mono font-bold text-slate-900">{metrics.chi2.toExponential(2)}</div>
-                            <div className="text-[10px] text-slate-400 mt-1">Goodness of fit</div>
+                    <div className="grid grid-cols-2 gap-3">
+                        <div className="p-2 bg-slate-50 rounded border border-slate-100">
+                            <div className="text-[10px] text-slate-500 uppercase font-bold">Chi-Square (χ²)</div>
+                            <div className="text-lg font-mono font-bold text-slate-900">{metrics.chi2.toExponential(2)}</div>
+                            <div className="text-[9px] text-slate-400 mt-0.5">Goodness of fit</div>
                         </div>
-                        <div className="p-3 bg-slate-50 rounded border border-slate-100">
-                            <div className="text-xs text-slate-500 uppercase font-bold">Figure of Merit</div>
-                            <div className="text-xl font-mono font-bold text-blue-600">{metrics.fom.toFixed(3)}%</div>
-                            <div className="text-[10px] text-slate-400 mt-1">Log-difference metric</div>
+                        <div className="p-2 bg-slate-50 rounded border border-slate-100">
+                            <div className="text-[10px] text-slate-500 uppercase font-bold">Figure of Merit</div>
+                            <div className="text-lg font-mono font-bold text-blue-600">{metrics.fom.toFixed(3)}%</div>
+                            <div className="text-[9px] text-slate-400 mt-0.5">Log-difference metric</div>
                         </div>
-                        <div className="p-3 bg-slate-50 rounded border border-slate-100">
-                            <div className="text-xs text-slate-500 uppercase font-bold">Mean Abs Error</div>
-                            <div className="text-lg font-mono text-slate-700">{metrics.mae.toFixed(4)}</div>
+                        <div className="p-2 bg-slate-50 rounded border border-slate-100">
+                            <div className="text-[10px] text-slate-500 uppercase font-bold">Mean Abs Error</div>
+                            <div className="text-base font-mono text-slate-700">{metrics.mae.toFixed(4)}</div>
                         </div>
-                        <div className="p-3 bg-slate-50 rounded border border-slate-100">
-                            <div className="text-xs text-slate-500 uppercase font-bold">Points</div>
-                            <div className="text-lg font-mono text-slate-700">{measuredData.x.length}</div>
+                        <div className="p-2 bg-slate-50 rounded border border-slate-100">
+                            <div className="text-[10px] text-slate-500 uppercase font-bold">Points</div>
+                            <div className="text-base font-mono text-slate-700">{measuredData.x.length}</div>
                         </div>
                     </div>
                 </BentoCard>
 
-                {/* Parameters Table */}
-                <BentoCard title="Structural Parameters" className="flex-1" action={<CopyButton text={latexTable} />}>
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-sm text-left border-collapse">
+                {/* 2. Parameters Table (Flex-1으로 남은 공간 차지) */}
+                <BentoCard title="Structural Parameters" className="flex-1 min-h-[200px]" action={<CopyButton text={latexTable} />}>
+                    <div className="overflow-x-auto h-full">
+                        <table className="w-full text-xs text-left border-collapse">
                             <thead>
-                                <tr className="border-t-2 border-b border-slate-800 text-slate-900">
+                                <tr className="border-t-2 border-b border-slate-800 text-slate-900 bg-slate-50/50">
                                     <th className="py-2 px-2 font-bold">Material</th>
                                     <th className="py-2 px-2 font-bold text-right">d (Å)</th>
                                     <th className="py-2 px-2 font-bold text-right">ρ (g/cm³)</th>
@@ -291,11 +289,11 @@ export function ReportXRR() {
                             </thead>
                             <tbody className="text-slate-700">
                                 {fittedLayers.map((layer, idx) => (
-                                    <tr key={layer.id} className="border-b border-slate-200 last:border-b-2 last:border-slate-800">
+                                    <tr key={layer.id} className="border-b border-slate-100 last:border-b-2 last:border-slate-800 hover:bg-slate-50 transition-colors">
                                         <td className="py-2 px-2 font-semibold">{layer.material}</td>
-                                        <td className="py-2 px-2 text-right font-mono">{idx === fittedLayers.length - 1 ? '∞' : layer.thickness.toFixed(2)}</td>
-                                        <td className="py-2 px-2 text-right font-mono">{layer.density.toFixed(2)}</td>
-                                        <td className="py-2 px-2 text-right font-mono">{layer.roughness.toFixed(2)}</td>
+                                        <td className="py-2 px-2 text-right font-mono text-slate-600">{idx === fittedLayers.length - 1 ? '∞' : layer.thickness.toFixed(2)}</td>
+                                        <td className="py-2 px-2 text-right font-mono text-slate-600">{layer.density.toFixed(2)}</td>
+                                        <td className="py-2 px-2 text-right font-mono text-slate-600">{layer.roughness.toFixed(2)}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -303,26 +301,31 @@ export function ReportXRR() {
                     </div>
                 </BentoCard>
 
-                {/* Methodology Text */}
-                <BentoCard title="Methodology" className="shrink-0" action={<CopyButton text={methodologyText} />}>
-                    <div className="bg-slate-50 p-4 rounded-lg border border-slate-100">
-                        <p className="text-sm text-slate-700 leading-relaxed font-serif text-justify">{methodologyText}</p>
+                {/* 3. Merged Text Card (통합됨) */}
+                <BentoCard 
+                    title={<div className="flex items-center gap-2"><FileText className="w-4 h-4 text-primary"/> Analysis Summary</div>} 
+                    className="shrink-0" 
+                    action={<CopyButton text={methodologyText + "\n\n" + resultsText} />}
+                >
+                    <div className="bg-slate-50 p-3 rounded-lg border border-slate-100 flex flex-col gap-3">
+                        <div>
+                            <h4 className="text-[10px] font-bold text-slate-500 uppercase mb-1">Methodology</h4>
+                            <p className="text-xs text-slate-700 leading-relaxed font-serif text-justify">{methodologyText}</p>
+                        </div>
+                        <div className="border-t border-slate-200 pt-2">
+                            <h4 className="text-[10px] font-bold text-slate-500 uppercase mb-1">Results</h4>
+                            <p className="text-xs text-slate-700 leading-relaxed font-serif text-justify">{resultsText}</p>
+                        </div>
                     </div>
                 </BentoCard>
 
-                {/* Results Text */}
-                <BentoCard title="Results" className="shrink-0" action={<CopyButton text={resultsText} />}>
-                    <div className="bg-slate-50 p-4 rounded-lg border border-slate-100">
-                        <p className="text-sm text-slate-700 leading-relaxed font-serif text-justify">{resultsText}</p>
-                    </div>
-                </BentoCard>
-
-                <div className="flex gap-2">
-                    <button className="flex-1 flex items-center justify-center gap-2 bg-slate-900 text-white py-2 rounded-lg text-sm font-bold shadow-sm hover:bg-slate-800 transition-all">
-                        <Download className="w-4 h-4" /> Export Report (PDF)
+                {/* 4. Buttons */}
+                <div className="flex gap-2 shrink-0">
+                    <button className="flex-1 flex items-center justify-center gap-2 bg-slate-900 text-white py-2 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-800 transition-all">
+                        <Download className="w-3.5 h-3.5" /> Export PDF
                     </button>
-                    <button className="flex-1 flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-700 py-2 rounded-lg text-sm font-bold shadow-sm hover:bg-slate-50 transition-all">
-                        <Printer className="w-4 h-4" /> Print
+                    <button className="flex-1 flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-700 py-2 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 transition-all">
+                        <Printer className="w-3.5 h-3.5" /> Print
                     </button>
                 </div>
 

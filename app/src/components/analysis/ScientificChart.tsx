@@ -13,6 +13,7 @@ interface ScientificChartProps {
   yUnit?: string;
   yScale?: "linear" | "log";
   showLegend?: boolean;
+  hideXLabel?: boolean; // ✅ 추가: X축 라벨 숨김 옵션
 }
 
 export function ScientificChart({
@@ -23,10 +24,11 @@ export function ScientificChart({
   yUnit = "counts",
   yScale = "log",
   showLegend = true,
+  hideXLabel = false, // ✅ 기본값 false
 }: ScientificChartProps) {
   
-  const axisTitleFont = { size: 13, family: "var(--font-inter)", color: "#475569" }; // Slate-600
-  const tickFont = { family: "var(--font-jetbrains-mono)", size: 11, color: "#64748b" }; // Slate-500
+  const axisTitleFont = { size: 13, family: "var(--font-inter)", color: "#475569" };
+  const tickFont = { family: "var(--font-jetbrains-mono)", size: 11, color: "#64748b" };
 
   return (
     <div className="w-full h-full relative">
@@ -42,7 +44,7 @@ export function ScientificChart({
             color: d.color || "#3b82f6",
             size: 5,
             symbol: "circle", 
-            line: { width: 0 } // 선 없애서 깔끔하게
+            line: { width: 0 }
           },
           line: {
             width: 2,
@@ -52,7 +54,8 @@ export function ScientificChart({
         layout={{
           autosize: true,
           font: { family: "var(--font-inter)", size: 12 },
-          margin: { l: 60, r: 20, t: 20, b: 50 }, 
+          // ✅ 여백 조정: X축이 없으면 아래 여백을 줄임
+          margin: { l: 60, r: 20, t: 20, b: hideXLabel ? 10 : 50 }, 
           showlegend: showLegend,
           legend: {
             x: 1, xanchor: "right", y: 1,
@@ -61,7 +64,9 @@ export function ScientificChart({
             font: { size: 11, color: "#64748b" }
           },
           xaxis: {
-            title: { text: `${xLabel} (${xUnit})`, font: axisTitleFont },
+            // ✅ hideXLabel이면 타이틀과 틱 라벨을 숨김
+            title: hideXLabel ? undefined : { text: `${xLabel} (${xUnit})`, font: axisTitleFont },
+            showticklabels: !hideXLabel, 
             type: "linear",
             gridcolor: "#f1f5f9",
             zerolinecolor: "#e2e8f0",
@@ -74,7 +79,7 @@ export function ScientificChart({
             gridcolor: "#f1f5f9",
             zerolinecolor: "#e2e8f0",
             tickfont: tickFont,
-            tickformat: ".1e", // 과학적 표기법 강제
+            tickformat: ".1e",
             automargin: true,
           },
           paper_bgcolor: "transparent",

@@ -51,6 +51,20 @@
   --shadow-float: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
 }
 
+@layer utilities {
+  .transform-style-3d {
+    transform-style: preserve-3d;
+  }
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+  /* 부드러운 회전을 위한 3D 장면 컨테이너 */
+  .scene-camera {
+    perspective: 2000px;
+    transform-style: preserve-3d;
+  }
+}
+
 body {
   background-color: var(--color-background);
   color: var(--color-foreground);
